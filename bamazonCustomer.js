@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-function afterConnection() {
+const afterConnection = () => {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -24,7 +24,6 @@ const buyProduct = () => {
 
         if (err) throw err;
         // console.log(res);
-        // console.log(res.affectedRows + ' product inserted!\n');
         // Call updateProduct AFTER the INSERT completes
         // displayInfo();
 
@@ -56,32 +55,35 @@ const buyProduct = () => {
         ]).then(answers => {
             const name = answers.name;
             const units = parseInt(answers.units);
+            console.log(name)
 
-            var chosenItem;
-            for (var i = 0; i < results.length; i++) {
-              if (results[i].product_name === answers.name) {
-                chosenItem = results[i];
-              }
+
+            let chosenItem;
+            let chosenItemStock;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].product_name === name) {
+                    chosenItem = res[i];
+                    chosenItemStock = chosenItem.stock_quantity - units;
+                }
             };
+            console.log(chosenItemStock);
+
             connection.query(
                 "UPDATE products SET ? WHERE ?",
                 [
                     {
-                        stock_quantity: function (units) {
-                            const newStockQuantity = stock_quantity - units;
-                            return newStockQuantity;
-                        }
+                        stock_quantity: chosenItemStock
                     },
                     {
-                        product_name: chosenItem.id
+                        product_name: chosenItem.product_name
                     }
                 ],
-                function (error) {
-                    if (error) throw err;
+                function (err) {
+                    if (err) throw err;
                     console.log("Bid placed successfully!");
-                    start();
                 }
             );
+            // console.log(res.affectedRows + ' product inserted!\n');
             afterConnection();
         })
         // console.log('Placing order for ' + units + 'units for ' + name + '...\n');
@@ -89,7 +91,8 @@ const buyProduct = () => {
     });
 
 };
-buyProduct();
+// buyProduct();
+
 
 const testInq = () => {
     inquirer.prompt([
@@ -129,3 +132,5 @@ const displayInfo = () => {
 
     })
 };
+
+displayInfo();
