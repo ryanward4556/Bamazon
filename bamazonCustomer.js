@@ -18,7 +18,28 @@ const afterConnection = () => {
     });
 }
 
-const buyProduct = () => {
+async function displayInfo(cb) {
+
+    connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+
+        var table = new Table({
+            head: ['id', 'product', 'department', 'price', 'in-stock'],
+            colWidths: [5, 75, 15, 12, 12],
+        });
+
+        for (let i = 0; i < res.length; i++) {
+            // console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | $" + res[i].price + " | " + res[i].stock_quantity + "\n");
+            // console.log(res[i].stock_quantity);
+            table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity]);
+        }
+        // const boughtProduct = await cb();
+        console.log(table.toString());
+
+    })
+};
+
+function buyProduct() {
 
     connection.query("SELECT * FROM products", function (err, res) {
 
@@ -55,9 +76,6 @@ const buyProduct = () => {
         ]).then(answers => {
             const name = answers.name;
             const units = parseInt(answers.units);
-            console.log(name)
-
-
             let chosenItem;
             let chosenItemStock;
             for (var i = 0; i < res.length; i++) {
@@ -66,7 +84,6 @@ const buyProduct = () => {
                     chosenItemStock = chosenItem.stock_quantity - units;
                 }
             };
-            console.log(chosenItemStock);
 
             connection.query(
                 "UPDATE products SET ? WHERE ?",
@@ -91,46 +108,7 @@ const buyProduct = () => {
     });
 
 };
-// buyProduct();
+buyProduct();
 
+// displayInfo(buyProduct);
 
-const testInq = () => {
-    inquirer.prompt([
-        {
-            name: "choice",
-            type: "rawlist",
-            choices: [1, 2, 3],
-            message: "choose a number"
-        },
-        {
-            name: "number",
-            type: "number",
-            message: "how many"
-        }
-    ]).then(answers => {
-        console.log(answers);
-    })
-}
-// testInq();
-
-const displayInfo = () => {
-    connection.query("SELECT * FROM products", function (err, res) {
-
-        if (err) throw err;
-
-        var table = new Table({
-            head: ['id', 'product', 'department', 'price', 'in-stock'],
-            colWidths: [5, 75, 15, 12, 12],
-        });
-
-        for (let i = 0; i < res.length; i++) {
-            // console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | $" + res[i].price + " | " + res[i].stock_quantity + "\n");
-            console.log(res[i].stock_quantity);
-            table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity]);
-        }
-        console.log(table.toString());
-
-    })
-};
-
-displayInfo();
