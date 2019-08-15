@@ -10,14 +10,6 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-const afterConnection = () => {
-    connection.query("SELECT * FROM products", function (err, res) {
-        if (err) throw err;
-        // console.log(res);
-        connection.end();
-    });
-}
-
 function start() {
     inquirer
         .prompt({
@@ -58,12 +50,12 @@ function start() {
 
 const cliTableTemplate = (res) => {
     const table = new Table({
-        head: ['id', 'product', 'department', 'price', 'in-stock'],
-        colWidths: [5, 75, 15, 12, 12],
+        head: ['id', 'product', 'department', 'price ($)', 'in-stock', 'sales ($)'],
+        colWidths: [5, 75, 15, 12, 12, 12],
     });
 
     for (let i = 0; i < res.length; i++) {
-        table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity]);
+        table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity, res[i].product_sales]);
     }
     console.log(table.toString());
 }

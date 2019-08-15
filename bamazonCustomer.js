@@ -24,14 +24,14 @@ async function displayInfo(cb) {
         if (err) throw err;
 
         var table = new Table({
-            head: ['id', 'product', 'department', 'price', 'in-stock'],
-            colWidths: [5, 75, 15, 12, 12],
+            head: ['id', 'product', 'department', 'price ($)', 'in-stock', 'sales ($)'],
+            colWidths: [5, 75, 15, 12, 12, 12],
         });
 
         for (let i = 0; i < res.length; i++) {
             // console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | $" + res[i].price + " | " + res[i].stock_quantity + "\n");
             // console.log(res[i].stock_quantity);
-            table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity]);
+            table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity, res[i].product_sales]);
         }
         // const boughtProduct = await cb();
         console.log(table.toString());
@@ -78,24 +78,28 @@ function buyProduct() {
             const units = parseInt(answers.units);
             let chosenItem;
             let chosenItemStock;
+            let productSales;
             for (var i = 0; i < res.length; i++) {
                 if (res[i].product_name === name) {
                     chosenItem = res[i];
                     chosenItemStock = chosenItem.stock_quantity - units;
+                    productSales = chosenItemStock * chosenItem.price_amount;
                 }
             };
 
             connection.query(
-                "UPDATE products SET ? WHERE ?",
+                "UPDATE products SET ?,? WHERE ?",
                 [
                     {
                         stock_quantity: chosenItemStock
                     },
                     {
+                        product_sales: productSales
+                    },
+                    {
                         product_name: chosenItem.product_name
                     }
-                ],
-                function (err) {
+                ], function (err) {
                     if (err) throw err;
                     console.log("Bid placed successfully!");
                 }
