@@ -17,7 +17,7 @@ By running node bamazonManager.js you will be prompted to:
 Each search displays relevant information for the searched item and is added to the searches.txt file. 
 
 ## YouTube demo link: 
-[Bamazon demo](https://youtu.be/wimQ16VG4zc)
+[Bamazon demo](https://youtu.be/U7UQwMIsAEA)
 
 ### Technologies Used: 
 * Node.js
