@@ -33,7 +33,7 @@ var connection = mysql.createConnection({
 // };
 
 function buyProduct() {
-    console.log(connection);
+    // console.log(connection);
 
     connection.query("SELECT * FROM products", function (err, res) {
 
