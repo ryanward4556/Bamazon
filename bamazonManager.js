@@ -50,12 +50,12 @@ function start() {
 
 const cliTableTemplate = (res) => {
     const table = new Table({
-        head: ['id', 'product', 'department', 'price ($)', 'in-stock', 'sales ($)'],
-        colWidths: [5, 75, 15, 12, 12, 12],
+        head: ['id', 'product', 'department', 'price ($)', 'in-stock'],
+        colWidths: [5, 75, 15, 12, 12],
     });
 
     for (let i = 0; i < res.length; i++) {
-        table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity, res[i].product_sales]);
+        table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_amount, res[i].stock_quantity]);
     }
     console.log(table.toString());
 }
@@ -119,7 +119,8 @@ const addNewProduct = () => {
         connection.query(sql, function (err, res) {
             if (err) { throw err }
             else {
-                console.log(name + " was added to inventory!")
+                console.log(name + " was added to inventory " + "with " + stock + " units\n");
+                start();
             }
         })
     });
